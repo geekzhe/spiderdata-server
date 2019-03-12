@@ -19,7 +19,11 @@ spiderdata-server 为 spiderdata 项目服务端。
     ├── cmd		<--- 可执行脚本目录(服务器动脚本等)
     │   └── __init__.py
     ├── db		<--- 数据库操作相关代码目录
-    │   └── __init__.py
+    │   ├── __init__.py
+    │   ├── mongodb_client.py
+    │   └── mysql_client.py
+    ├── etc		<--- 配置文件目录
+    │   └── spiderdata-server.py	<--- 与环境有关的配置都放到配置文件中(如数据库连接信息、服务器监听地址等)
     ├── __init__.py
     └── server	<--- 具体模块目录
         ├── data	<--- 数据收集、分析功能模块
@@ -31,5 +35,4 @@ spiderdata-server 为 spiderdata 项目服务端。
             ├── api.py
             ├── __init__.py
             └── manager.py
-
 ```
