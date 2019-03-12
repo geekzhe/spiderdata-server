@@ -28,8 +28,8 @@ spiderdata-server 为 spiderdata 项目服务端。
     └── server	<--- 具体模块目录
         ├── data	<--- 数据收集、分析功能模块
         │   ├── api.py		<--- API 相关代码(注意，该文件中不涉及具体功能逻辑代码)
-        │   ├── __init__.py		<--- 具体逻辑功能代码
-        │   └── manager.py
+        │   ├── __init__.py
+        │   └── manager.py		<--- 具体逻辑功能代码
         ├── __init__.py
         └── user	<--- 用户管理功能模块
             ├── api.py
