@@ -1,0 +1,15 @@
+# Mysql 连接配置
+
+MYSQL_HOST = ''
+MYSQL_PORT = 3306
+MYSQL_USERNAME = ''
+MYSQL_PASSWORD = ''
+MYSQL_DATABASE_NAME = ''
+
+# MongoDB 连接配置
+
+
+# 用户服务相关配置
+
+USER_API_HOST = ''
+USER_API_PORT = 7070
