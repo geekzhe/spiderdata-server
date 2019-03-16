@@ -220,8 +220,8 @@ Authorization: Token <token>
 |----|----|----|
 |username|str|用户名|
 |email|str|邮箱|
-|age|int|年龄|
-|working_years|int|工作年限|
+|birthday|str|生日(YYYY-MM-DD)|
+|working_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
 |city|str|所在城市|
 
@@ -232,8 +232,8 @@ Authorization: Token <token>
     "body": {
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
-		"age": 25,
-		"working_years": 1,
+		"birthday": "1993年08月23日",
+		"working_start": "2015年7月",
 		"education": "本科"
 	},
     "msg": "success",
@@ -292,8 +292,8 @@ Authorization: Token <token>
 |----|----|----|
 |username|str|用户名|
 |email|str|邮箱|
-|age|int|年龄|
-|working_years|int|工作年限|
+|birthday|str|生日(YYYY-MM-DD)|
+|working_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
 |city|str|所在城市|
 
@@ -304,8 +304,8 @@ Authorization: Token <token>
     "body": {
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
-		"age": 25,
-		"working_years": 1,
+		"birthday": "YYYY-MM-DD",
+		"working_start": "YYYY-MM-DD HH:MM:SS",
 		"education": "本科"
 	},
     "msg": "success",
