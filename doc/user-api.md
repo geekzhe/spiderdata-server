@@ -220,8 +220,8 @@ Authorization: Token <token>
 |----|----|----|
 |username|str|用户名|
 |email|str|邮箱|
-|age|int|年龄|
-|working_years|int|工作年限|
+|birthday|str|生日(YYYY-MM-DD)|
+|working_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
 |city|str|所在城市|
 
@@ -232,8 +232,8 @@ Authorization: Token <token>
     "body": {
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
-		"age": 25,
-		"working_years": 1,
+		"birthday": "1993年08月23日",
+		"working_start": "2015年7月",
 		"education": "本科"
 	},
     "msg": "success",
@@ -292,8 +292,8 @@ Authorization: Token <token>
 |----|----|----|
 |username|str|用户名|
 |email|str|邮箱|
-|age|int|年龄|
-|working_years|int|工作年限|
+|birthday|str|生日(YYYY-MM-DD)|
+|working_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
 |city|str|所在城市|
 
@@ -304,8 +304,8 @@ Authorization: Token <token>
     "body": {
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
-		"age": 25,
-		"working_years": 1,
+		"birthday": "YYYY-MM-DD",
+		"working_start": "YYYY-MM-DD HH:MM:SS",
 		"education": "本科"
 	},
     "msg": "success",
@@ -575,6 +575,63 @@ Authorization: Token <token>
 |参数|数据类型|功能|
 |----|----|----|
 |id|int|要更新为已读状态的消息的ID|
+
+> 示例
+
+```
+{
+	"id": 1
+}
+```
+
+* 响应数据
+
+|参数|数据类型|功能|
+|----|----|----|
+|status|int|状态码|
+|msg|str|描述信息|
+|body|dict|返回数据(无)|
+
+> 示例
+
+```
+{
+    "body": {},
+	"msg": "success",
+	"status": 10001
+}
+```
+
+## 删除用户消息(站内信)
+
+删除用户消息(站内信)
+
+* API
+
+```
+/v1/user/messages
+```
+
+* HTTP 请求方法
+
+```
+DELETE
+```
+
+* 请求头
+
+> 注意：<token> 需要替换为登陆时获取到的token
+
+```
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+* 请求参数
+
+|参数|数据类型|功能|
+|----|----|----|
+|id|int|要删除的消息的ID|
 
 > 示例
 
