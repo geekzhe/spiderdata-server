@@ -14,7 +14,6 @@ spiderdata
 
 用户基本信息表，用于存放用户基本信息
 
-```
 |字段|数据类型|约束|
 |----|----|----|
 |uuid|varchar(64)|primary key|
@@ -25,7 +24,6 @@ spiderdata
 |birthday|varchar(32)||
 |email|varchar(64)|unique not null|
 |active|enum('0','1')|default '0' not null|
-```
 
 ```
 > create table user (
@@ -44,7 +42,6 @@ active enum('0','1') default '0' not null
 
 用户工作信息表，用于存放与工作有关的信息
 
-```
 |字段|数据类型|约束|
 |----|----|----|
 |uuid|varchar(64)|primary key|
@@ -54,7 +51,6 @@ active enum('0','1') default '0' not null
 |work_start|varchar(32)||
 |education|enum('小学','初中','高中','大专','本科','硕士','博士')||
 |work_city|varchar(32)||
-```
 
 ```
 > create table user_work_info (
@@ -72,7 +68,6 @@ work_city varchar(32)
 
 用户技能信息表，用于存放用户技能信息
 
-```
 |字段|数据类型|约束|
 |----|----|----|
 |uuid|varchar(64)|primary key|
@@ -80,7 +75,6 @@ work_city varchar(32)
 |update_time|varchar(64)||
 |user_uuid|varchar(64)|unique not null|
 |skills|text||
-```
 
 ```
 > create table user_skill (
@@ -96,7 +90,6 @@ skills text
 
 用户消息(站内信)表，用于存放用户消息
 
-```
 |字段|数据类型|约束|
 |----|----|----|
 |id|int(128)|primary key auto_increment|
@@ -107,7 +100,6 @@ skills text
 |content|text||
 |has_read|enum('0','1')|default '0' not null|
 |deleted|enum('0','1')|default '0' not null|
-```
 
 ```
 > create table user_messages (
