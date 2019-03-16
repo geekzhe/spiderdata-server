@@ -113,3 +113,21 @@ has_read enum('0','1') default '0' not null,
 deleted enum('0','1') default '0' not null
 ) default charset=utf8;
 ```
+
+### user_tokens
+
+用户 token 表，用于存放用户 token
+
+|字段|数据类型|约束|
+|----|----|----|
+|token|varchar(64)|unique not null|
+|expire|varchar(64)|not null|
+|deleted|enum('0','1')|default '0' not null|
+
+```
+create table user_tokens (
+token varchar(64) unique not null,
+expire varchar(64) not null,
+deleted enum('0','1') default '0' not null
+) default charset=utf8;
+```
