@@ -602,6 +602,63 @@ Authorization: Token <token>
 }
 ```
 
+## 删除用户消息(站内信)
+
+删除用户消息(站内信)
+
+* API
+
+```
+/v1/user/messages
+```
+
+* HTTP 请求方法
+
+```
+DELETE
+```
+
+* 请求头
+
+> 注意：<token> 需要替换为登陆时获取到的token
+
+```
+Content-Type: application/json
+Authorization: Token <token>
+```
+
+* 请求参数
+
+|参数|数据类型|功能|
+|----|----|----|
+|id|int|要删除的消息的ID|
+
+> 示例
+
+```
+{
+	"id": 1
+}
+```
+
+* 响应数据
+
+|参数|数据类型|功能|
+|----|----|----|
+|status|int|状态码|
+|msg|str|描述信息|
+|body|dict|返回数据(无)|
+
+> 示例
+
+```
+{
+    "body": {},
+	"msg": "success",
+	"status": 10001
+}
+```
+
 ## 账号激活
 
 通过邮箱中的激活链接激活账号
