@@ -2,25 +2,48 @@
 用户管理模块业务代码
 """
 from spiderdata_server.db.mysql_client import MysqlClient
+from spiderdata_server.server import helper
 
 DB = MysqlClient()
 
 
 class User(object):
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email, uuid=None):
         self.username = username
         self.password = password
         self.email = email
-        self.uuid = None
+        self.uuid = uuid
 
     def check_password(self, password):
-        pass
+        if self.password != password:
+            return False
+        else:
+            return True
 
     def check_token(self, token):
-        pass
+        rest = DB.get_token_by_token(token)
+        if not rest:
+            return False
 
-    def generate_token(self):
-        pass
+        if helper.expire(rest['expire']):
+            return False
+
+        return True
+
+    def generate_token(self, expire=60):
+        # 生成随机 token
+        token = helper.generate_uuid()
+
+        # 计算过期时间
+        now_sec = helper.get_time_sec()
+        expire_time_sec = now_sec + expire * 60
+        expire_time = helper.get_time(expire_time_sec)
+
+        # 将 token 存储到数据库
+        DB.add_token(self.uuid, token, expire_time)
+
+        if self.check_token(token):
+            return token
 
     def revoke_token(self):
         pass
@@ -64,7 +87,7 @@ def get_user_by_username(username):
     user_info = DB.get_user(username)
     if user_info:
         user = User(user_info['username'], user_info['password'],
-                    user_info['email'])
+                    user_info['email'], user_info['uuid'])
 
     return user
 

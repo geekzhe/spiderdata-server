@@ -120,12 +120,14 @@ deleted enum('0','1') default '0' not null
 
 |字段|数据类型|约束|
 |----|----|----|
+|user_uuid|varchar(64)|not null|
 |token|varchar(64)|unique not null|
 |expire|varchar(64)|not null|
 |deleted|enum('0','1')|default '0' not null|
 
 ```
 create table user_tokens (
+user_uuid varchar(64) not null,
 token varchar(64) unique not null,
 expire varchar(64) not null,
 deleted enum('0','1') default '0' not null

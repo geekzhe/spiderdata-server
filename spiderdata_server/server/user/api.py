@@ -47,7 +47,33 @@ def register():
 def login():
     """用户登陆方法
     验证用户名密码，返回token"""
-    pass
+    username = request.json.get('username')
+    password = request.json.get('password')
+
+    # 判断用户是否存在，用户不存在返回错误信息
+    user = user_manager.get_user_by_username(username)
+    if not user:
+        resp = helper.make_response_dict(10004, 'user not found',
+                                         {'username': username})
+        return make_response(jsonify(resp), 404)
+
+    # 检查密码是否正确，密码不正确返回错误信息
+    if not user.check_password(password):
+        resp = helper.make_response_dict(10005, 'password incorrect',
+                                         {'username': username})
+        return make_response(jsonify(resp), 400)
+
+    # 生成并返回 token
+    token = user.generate_token()
+    if not token:
+        resp = helper.make_response_dict(10006, 'token create failed',
+                                         {'username': username})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'login success',
+                                     {'username': username,
+                                      'token': token})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/token', methods=['DELETE'])

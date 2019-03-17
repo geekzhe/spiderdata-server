@@ -104,10 +104,11 @@ class MysqlClient(MysqlBase):
         super().__init__(host, user, passwd, dbname)
 
     def add_user(self, username, password, email):
-        UUID = str(uuid.uuid4())
+        user_uuid = str(uuid.uuid4())
         create_time = helper.get_time()
         # TODO: 处理插入异常
-        self.insert('user', (UUID, create_time, username, password, email),
+        self.insert('user', (user_uuid, create_time, username, password,
+                             email),
                     '(uuid, create_time, username, password, email)')
 
     def update_user(self):
@@ -133,3 +134,22 @@ class MysqlClient(MysqlBase):
             pass
 
         return user_info
+
+    def add_token(self, user_uuid, token, expire):
+        self.insert('user_tokens', (user_uuid, token, expire),
+                    '(user_uuid, token,expire)')
+
+    def get_token_by_token(self, token):
+        t = None
+        results = self.select('user_tokens', '*', 'token=\'%s\'' % token,
+                              'deleted=\'0\'')
+
+        if results:
+            r = results[0]
+            t = {
+                'user_uuid': r[0],
+                'token': r[1],
+                'expire': r[2]
+            }
+
+        return t

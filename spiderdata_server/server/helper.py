@@ -1,4 +1,5 @@
 import time
+import uuid
 
 
 def make_response_dict(status, msg, body):
@@ -22,3 +23,20 @@ def get_time(sec=None):
                                            lt[5])
 
     return now
+
+
+def get_time_sec():
+    return time.time()
+
+
+def generate_uuid():
+    return str(uuid.uuid4())
+
+
+def expire(datetime):
+    now = get_time()
+    time_fmt = '%Y-%m-%d %H:%M:%S'
+    if time.strptime(now, time_fmt) > time.strptime(datetime, time_fmt):
+        return True
+    else:
+        return False
