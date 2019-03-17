@@ -3,7 +3,10 @@
 
 该模块中只放用于对外提供服务的 RESTful API 接口代码，不放具体的业务逻辑代码
 """
-from flask import Flask
+from flask import Flask, g, jsonify, make_response, request
+
+from spiderdata_server.server import helper
+from spiderdata_server.server.user import manager as user_manager
 
 app = Flask(__name__)
 
@@ -11,7 +14,33 @@ app = Flask(__name__)
 @app.route('/v1/user', methods=['POST'])
 def register():
     """用户注册方法"""
-    pass
+    username = request.json.get('username')
+    password = request.json.get('password')
+    email = request.json.get('email')
+
+    # TODO: username、password、email合法性检查
+
+    # 判断用户是否存在，用户存在时注册失败，提示用户创建失败
+    user = user_manager.get_user_by_username(username)
+    if user:
+        resp = helper.make_response_dict(10002, 'user exists',
+                                         {'username': username})
+        return make_response(jsonify(resp), 400)
+
+    # 创建新用户
+    # 处理创建时的异常
+    user = user_manager.create_user(username, password, email)
+    if not user:
+        resp = helper.make_response_dict(10003, 'user create failed server '
+                                                'internal error',
+                                         {'username': username})
+        return make_response(jsonify(resp), 500)
+
+    # 将用户对象赋值给 g.user，其它方法中可以通过 g.user 获取用户对象
+    g.user = user
+    resp = helper.make_response_dict(10001, 'user create success',
+                                     {'username': g.user.username})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/token', methods=['POST'])

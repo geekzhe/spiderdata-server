@@ -1,6 +1,9 @@
 """
 用户管理模块业务代码
 """
+from spiderdata_server.db.mysql_client import MysqlClient
+
+DB = MysqlClient()
 
 
 class User(object):
@@ -48,11 +51,22 @@ class User(object):
 
 
 def create_user(username, password, email):
-    pass
+    # TODO: 密码需要hash后存储
+    # TODO: 捕获数据库操作异常
+    DB.add_user(username, password, email)
+    user = get_user_by_username(username)
+
+    return user
 
 
 def get_user_by_username(username):
-    pass
+    user = None
+    user_info = DB.get_user(username)
+    if user_info:
+        user = User(user_info['username'], user_info['password'],
+                    user_info['email'])
+
+    return user
 
 
 def get_user_by_email(email):

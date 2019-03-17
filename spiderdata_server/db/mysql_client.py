@@ -2,8 +2,10 @@
 Mysql 客户端
 """
 import pymysql
+import uuid
 
 from spiderdata_server.etc import settings as CONF
+from spiderdata_server.server import helper
 
 
 class MysqlBase(object):
@@ -83,8 +85,9 @@ class MysqlBase(object):
             cursor = self.conn.cursor()
             cursor.execute(sql)
             results = cursor.fetchall()
-            cursor.close()
             print('Select %d lines' % cursor.rowcount)
+            cursor.close()
+            self.conn.commit()
             return results
         except Exception as e:
             print('DataBase Select Error: %s' % e)
@@ -100,11 +103,33 @@ class MysqlClient(MysqlBase):
         dbname = CONF.MYSQL_DATABASE_NAME
         super().__init__(host, user, passwd, dbname)
 
-    def add_user(self):
-        pass
+    def add_user(self, username, password, email):
+        UUID = str(uuid.uuid4())
+        create_time = helper.get_time()
+        # TODO: 处理插入异常
+        self.insert('user', (UUID, create_time, username, password, email),
+                    '(uuid, create_time, username, password, email)')
 
     def update_user(self):
         pass
 
-    def get_user(self):
-        pass
+    def get_user(self, username):
+        user_info = None
+        results = self.select('user', '*', 'username=\'%s\'' % username)
+        if results:
+            u = results[0]
+            user_info = {
+                'uuid': u[0],
+                'create_time': u[1],
+                'update_time': u[2],
+                'username': u[3],
+                'password': u[4],
+                'birthday': u[5],
+                'email': u[6],
+                'active': u[7]
+            }
+        else:
+            # TODO(blkart): raise UserNotFound Exception
+            pass
+
+        return user_info
