@@ -20,16 +20,6 @@ class User(object):
         else:
             return True
 
-    def check_token(self, token):
-        rest = DB.get_token_by_token(token)
-        if not rest:
-            return False
-
-        if helper.expire(rest['expire']):
-            return False
-
-        return True
-
     def generate_token(self, expire=60):
         # 生成随机 token
         token = helper.generate_uuid()
@@ -42,7 +32,7 @@ class User(object):
         # 将 token 存储到数据库
         DB.add_token(self.uuid, token, expire_time)
 
-        if self.check_token(token):
+        if check_token(token):
             return token
 
     def revoke_token(self):
@@ -84,7 +74,7 @@ def create_user(username, password, email):
 
 def get_user_by_username(username):
     user = None
-    user_info = DB.get_user(username)
+    user_info = DB.get_user(username=username)
     if user_info:
         user = User(user_info['username'], user_info['password'],
                     user_info['email'], user_info['uuid'])
@@ -97,4 +87,24 @@ def get_user_by_email(email):
 
 
 def get_user_by_token(token):
-    pass
+    user = None
+    token_info = DB.get_token_by_token(token)
+    user_uuid = token_info['user_uuid']
+    user_info = DB.get_user(user_uuid=user_uuid)
+    if user_info:
+        user = User(user_info['username'], user_info['password'],
+                    user_info['email'], user_info['uuid'])
+
+    return user
+
+
+def check_token(token):
+    rest = DB.get_token_by_token(token)
+    if not rest:
+        return False
+
+    if helper.expire(rest['expire']):
+        return False
+
+    return True
+

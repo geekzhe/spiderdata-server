@@ -4,11 +4,13 @@
 该模块中只放用于对外提供服务的 RESTful API 接口代码，不放具体的业务逻辑代码
 """
 from flask import Flask, g, jsonify, make_response, request
+from flask_httpauth import HTTPTokenAuth
 
 from spiderdata_server.server import helper
 from spiderdata_server.server.user import manager as user_manager
 
 app = Flask(__name__)
+token_auth = HTTPTokenAuth('Token')
 
 
 @app.route('/v1/user', methods=['POST'])
@@ -77,10 +79,11 @@ def login():
 
 
 @app.route('/v1/user/token', methods=['DELETE'])
+@token_auth.login_required
 def logout():
     """用户退出方法
     退出登陆，销毁token"""
-    pass
+    return make_response('success', 201)
 
 
 @app.route('/v1/user/profile', methods=['GET'])
@@ -123,3 +126,12 @@ def update_user_message():
 def activate_account(activation_code):
     """账号激活(通过激活码)"""
     pass
+
+
+@token_auth.verify_token
+def verify_token(token):
+    g.user = None
+    if user_manager.check_token(token):
+        g.user = user_manager.get_user_by_token(token)
+        return True
+    return False

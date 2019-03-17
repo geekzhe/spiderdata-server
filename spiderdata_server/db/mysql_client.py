@@ -114,9 +114,13 @@ class MysqlClient(MysqlBase):
     def update_user(self):
         pass
 
-    def get_user(self, username):
+    def get_user(self, username=None, user_uuid=None):
         user_info = None
-        results = self.select('user', '*', 'username=\'%s\'' % username)
+        if username:
+            condition = 'username=\'%s\'' % username
+        elif user_uuid:
+            condition = 'uuid=\'%s\'' % user_uuid
+        results = self.select('user', '*', condition)
         if results:
             u = results[0]
             user_info = {
