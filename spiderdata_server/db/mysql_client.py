@@ -139,6 +139,35 @@ class MysqlClient(MysqlBase):
 
         return user_info
 
+    def add_profile(self, user_uuid):
+        # TODO: 需要与 add_user 写到同一个事务中
+        profile_uuid = helper.generate_uuid()
+        create_time = helper.get_time()
+        # TODO: 处理异常
+        self.insert('user_work_info', (profile_uuid, create_time, user_uuid),
+                    '(uuid,create_time,user_uuid)')
+
+    def get_profile(self, user_uuid):
+        user_profile = None
+        table = 'user inner join user_work_info ' \
+                'on user.uuid=user_work_info.user_uuid'
+        field = 'username,email,birthday,work_start,education,work_city'
+        condition = 'user.uuid=\'%s\'' % user_uuid
+        results = self.select(table, field, condition)
+
+        if results:
+            p = results[0]
+            user_profile = {
+                'username': p[0],
+                'email': p[1],
+                'birthday': p[2],
+                'working_start': p[3],
+                'education': p[4],
+                'city': p[5]
+            }
+
+        return user_profile
+
     def add_token(self, user_uuid, token, expire):
         self.insert('user_tokens', (user_uuid, token, expire),
                     '(user_uuid, token,expire)')

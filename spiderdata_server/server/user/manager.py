@@ -39,7 +39,8 @@ class User(object):
         DB.delete_token(token)
 
     def get_profile(self):
-        pass
+        user_profile = DB.get_profile(self.uuid)
+        return user_profile
 
     def update_profile(self, **kwargs):
         pass
@@ -68,6 +69,7 @@ def create_user(username, password, email):
     # TODO: 捕获数据库操作异常
     DB.add_user(username, password, email)
     user = get_user_by_username(username)
+    DB.add_profile(user.uuid)
 
     return user
 

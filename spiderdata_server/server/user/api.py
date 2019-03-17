@@ -93,9 +93,20 @@ def logout():
 
 
 @app.route('/v1/user/profile', methods=['GET'])
+@token_auth.login_required
 def get_user_profile():
     """获取用户信息"""
-    pass
+    user = user_manager.get_user_by_username(g.user.username)
+    user_profile = user.get_profile()
+
+    if not user_profile:
+        resp = helper.make_response_dict(10007, 'user profile not found',
+                                         {'username': g.user.username})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'success',
+                                     {'user_profile': user_profile})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/profile', methods=['PUT'])
