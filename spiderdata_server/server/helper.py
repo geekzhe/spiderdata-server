@@ -35,7 +35,7 @@ def generate_uuid():
 
 def expire(datetime):
     now = get_time()
-    time_fmt = '%Y-%m-%d %H:%M:%S'
+    time_fmt = r'%Y-%m-%d %H:%M:%S'
     if time.strptime(now, time_fmt) > time.strptime(datetime, time_fmt):
         return True
     else:

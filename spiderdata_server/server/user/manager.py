@@ -35,8 +35,8 @@ class User(object):
         if check_token(token):
             return token
 
-    def revoke_token(self):
-        pass
+    def revoke_token(self, token):
+        DB.delete_token(token)
 
     def get_profile(self):
         pass
@@ -101,9 +101,11 @@ def get_user_by_token(token):
 def check_token(token):
     rest = DB.get_token_by_token(token)
     if not rest:
+        print('token %s not found' % token)
         return False
 
     if helper.expire(rest['expire']):
+        print('token %s expire' % token)
         return False
 
     return True

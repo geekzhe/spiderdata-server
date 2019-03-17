@@ -143,10 +143,13 @@ class MysqlClient(MysqlBase):
         self.insert('user_tokens', (user_uuid, token, expire),
                     '(user_uuid, token,expire)')
 
+    def delete_token(self, token):
+        self.update('user_tokens', 'deleted=\'1\'', 'token=\'%s\'' % token)
+
     def get_token_by_token(self, token):
         t = None
-        results = self.select('user_tokens', '*', 'token=\'%s\'' % token,
-                              'deleted=\'0\'')
+        condition = 'token=\'%s\' and deleted=\'0\'' % token
+        results = self.select('user_tokens', '*', condition)
 
         if results:
             r = results[0]

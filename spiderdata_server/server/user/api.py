@@ -83,7 +83,13 @@ def login():
 def logout():
     """用户退出方法
     退出登陆，销毁token"""
-    return make_response('success', 201)
+    # TODO: 处理异常
+    token = request.json.get('token')
+    g.user.revoke_token(token)
+
+    resp = helper.make_response_dict(10001, 'logout success',
+                                     {'username': g.user.username})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/profile', methods=['GET'])
