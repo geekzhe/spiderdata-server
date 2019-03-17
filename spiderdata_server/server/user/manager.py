@@ -62,10 +62,18 @@ class User(object):
     def update_message_status(self, msg_id):
         DB.update_message(msg_id)
 
+    def delete_message(self, msg_id):
+        DB.delete_message(msg_id)
+
     def get_message_status(self, msg_id):
         msg = DB.get_message(msg_id)
         has_read = msg.get('has_read', '0')
         return has_read
+
+    def message_deleted(self, msg_id):
+        msg = DB.get_message(msg_id)
+        deleted = msg.get('deleted', '0')
+        return deleted
 
     def generate_activation_code(self):
         pass

@@ -203,6 +203,28 @@ def update_user_message():
     return make_response(jsonify(resp), 201)
 
 
+@app.route('/v1/user/messages', methods=['DELETE'])
+@token_auth.login_required
+def delete_user_message():
+    """删除用户消息(站内信)"""
+    user = user_manager.get_user_by_username(g.user.username)
+    msg_id = request.json.get('id')
+
+    # TODO: 检查要修改的消息是否属于当前用户
+
+    user.delete_message(msg_id)
+
+    msg_deleted = user.message_deleted(msg_id)
+    if msg_deleted == '0':
+        resp = helper.make_response_dict(10012, 'message delete failed',
+                                         {'msg_id': msg_id})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'message delete success',
+                                     {'msg_id': msg_id})
+    return make_response(jsonify(resp), 201)
+
+
 @app.route('/v1/user/account_activation/<activation_code>', methods=['GET'])
 def activate_account(activation_code):
     """账号激活(通过激活码)"""

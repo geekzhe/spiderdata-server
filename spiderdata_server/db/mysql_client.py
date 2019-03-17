@@ -268,11 +268,18 @@ class MysqlClient(MysqlBase):
             msg['content'] = rst[5]
             msg['has_read'] = True if rst[6] == '1' else False
             msg['create_time'] = rst[1]
+            msg['deleted'] = rst[7]
 
         return msg
 
     def update_message(self, msg_id):
         table = 'user_messages'
         assigments = 'has_read=\'1\''
+        condition = 'id=\'%s\'' % msg_id
+        self.update(table, assigments, condition)
+
+    def delete_message(self, msg_id):
+        table = 'user_messages'
+        assigments = 'deleted=\'1\''
         condition = 'id=\'%s\'' % msg_id
         self.update(table, assigments, condition)
