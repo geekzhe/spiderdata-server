@@ -221,9 +221,9 @@ Authorization: Token <token>
 |username|str|用户名|
 |email|str|邮箱|
 |birthday|str|生日(YYYY-MM-DD)|
-|working_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
+|work_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
-|city|str|所在城市|
+|work_city|str|所在城市|
 
 > 示例
 
@@ -233,7 +233,7 @@ Authorization: Token <token>
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
 		"birthday": "1993年08月23日",
-		"working_start": "2015年7月",
+		"work_start": "2015年7月",
 		"education": "本科"
 	},
     "msg": "success",
@@ -293,9 +293,9 @@ Authorization: Token <token>
 |username|str|用户名|
 |email|str|邮箱|
 |birthday|str|生日(YYYY-MM-DD)|
-|working_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
+|work_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
-|city|str|所在城市|
+|work_city|str|所在城市|
 
 > 示例
 
@@ -305,7 +305,7 @@ Authorization: Token <token>
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
 		"birthday": "YYYY-MM-DD",
-		"working_start": "YYYY-MM-DD HH:MM:SS",
+		"work_start": "YYYY-MM-DD HH:MM:SS",
 		"education": "本科"
 	},
     "msg": "success",
@@ -518,7 +518,8 @@ Authorization: Token <token>
 |id|int|消息ID|
 |title|str|消息标题|
 |content|str|消息内容|
-|read|bool|阅读状态(True:已读;False:未读)|
+|has_read|bool|阅读状态(True:已读;False:未读)|
+|create_time|str|创建时间|
 
 > 示例
 
@@ -530,13 +531,15 @@ Authorization: Token <token>
 				"id": 1,
 				"title": "系统通知",
 				"content": "本周行业趋势分析报告已经发送到您的邮箱，请注意查收。",
-				"read": False
+				"has_read": False,
+				"create_time": "2019-03-16 13:23:31"
 			},
 			{
 				"id": 2,
 				"title": "您有来自 Tom 的新消息",
 				"content": ""
-				"read": False
+				"has_read": False
+				"create_time": "2019-03-16 18:33:11"
 			}
 		]
 	},
