@@ -215,7 +215,7 @@ class MysqlClient(MysqlBase):
     def update_skill(self, user_uuid, update_skill):
         table = 'user_skill'
         assigments = 'skills=\'%s\'' % ','.join(update_skill)
-        condition = 'user_uuid=\'%s\'' % user_uuid
+        condition = 'user_uuid=\'%s\' and deleted=\'0\'' % user_uuid
         self.update(table, assigments, condition)
 
     def add_skill(self, user_uuid):
@@ -236,7 +236,7 @@ class MysqlClient(MysqlBase):
         messages = []
         table = 'user_messages'
         field = '*'
-        condition = 'user_uuid=\'%s\'' % user_uuid
+        condition = 'user_uuid=\'%s\' and deleted=\'0\'' % user_uuid
         if page:
             limit = '%d,%d' % (limit * page, limit)
 
