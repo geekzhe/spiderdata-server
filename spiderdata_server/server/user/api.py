@@ -132,15 +132,39 @@ def update_user_profile():
 
 
 @app.route('/v1/user/skill', methods=['GET'])
+@token_auth.login_required
 def get_user_skill():
     """获取用户技能"""
-    pass
+    user = user_manager.get_user_by_username(g.user.username)
+    user_skill = user.get_skill()
+
+    if not user_skill:
+        resp = helper.make_response_dict(10009, 'user skill not found',
+                                         {'username': g.user.username})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'success',
+                                     {'skill': user_skill})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/skill', methods=['PUT'])
+@token_auth.login_required
 def update_user_skill():
     """更新用户技能"""
-    pass
+    user = user_manager.get_user_by_username(g.user.username)
+    update_skill = request.json.get('skill')
+    user.update_skill(update_skill)
+
+    user_skill = user.get_skill()
+    if not user_skill or update_skill != user_skill:
+        resp = helper.make_response_dict(10010, 'user skill update failed',
+                                         {'username': g.user.username})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'success',
+                                     {'skill': user_skill})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/messages', methods=['GET'])

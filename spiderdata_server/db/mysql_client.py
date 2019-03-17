@@ -196,3 +196,32 @@ class MysqlClient(MysqlBase):
             }
 
         return t
+
+    def get_skill(self, user_uuid):
+        user_skill = []
+        table = 'user_skill'
+        field = '*'
+        condition = 'user_uuid=\'%s\'' % user_uuid
+
+        results = self.select(table, field, condition)
+
+        if results:
+            skills = results[0][4]
+            for s in skills.split(','):
+                user_skill.append(s)
+
+        return user_skill
+
+    def update_skill(self, user_uuid, update_skill):
+        table = 'user_skill'
+        assigments = 'skills=\'%s\'' % ','.join(update_skill)
+        condition = 'user_uuid=\'%s\'' % user_uuid
+        self.update(table, assigments, condition)
+
+    def add_skill(self, user_uuid):
+        # TODO: 需要与 add_user 写到同一个事务中
+        skill_uuid = helper.generate_uuid()
+        create_time = helper.get_time()
+        # TODO: 处理异常
+        self.insert('user_skill', (skill_uuid, create_time, user_uuid),
+                    '(uuid,create_time,user_uuid)')

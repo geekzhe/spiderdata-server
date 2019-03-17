@@ -46,10 +46,11 @@ class User(object):
         DB.update_profile(self.uuid, update_profiles)
 
     def get_skill(self):
-        pass
+        user_skill = DB.get_skill(self.uuid)
+        return user_skill
 
     def update_skill(self, skills):
-        pass
+        DB.update_skill(self.uuid, skills)
 
     def get_messages(self, limit=10, page=1):
         pass
@@ -70,6 +71,7 @@ def create_user(username, password, email):
     DB.add_user(username, password, email)
     user = get_user_by_username(username)
     DB.add_profile(user.uuid)
+    DB.add_skill(user.uuid)
 
     return user
 
