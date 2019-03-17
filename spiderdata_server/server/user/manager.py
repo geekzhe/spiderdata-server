@@ -52,8 +52,12 @@ class User(object):
     def update_skill(self, skills):
         DB.update_skill(self.uuid, skills)
 
-    def get_messages(self, limit=10, page=1):
-        pass
+    def add_message(self, title, content=None):
+        DB.add_message(self.uuid, title, content)
+
+    def get_messages(self, limit=10, page=0):
+        messages = DB.get_messages(self.uuid, limit, page)
+        return messages
 
     def update_message_status(self, msg_id):
         pass

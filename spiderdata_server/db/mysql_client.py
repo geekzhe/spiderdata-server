@@ -225,3 +225,31 @@ class MysqlClient(MysqlBase):
         # TODO: 处理异常
         self.insert('user_skill', (skill_uuid, create_time, user_uuid),
                     '(uuid,create_time,user_uuid)')
+
+    def add_message(self, user_uuid, title, content=None):
+        create_time = helper.get_time()
+        # TODO: 处理异常
+        self.insert('user_messages', (create_time, user_uuid, title, content),
+                    '(create_time,user_uuid,title,content)')
+
+    def get_messages(self, user_uuid, limit=10, page=0):
+        messages = []
+        table = 'user_messages'
+        field = '*'
+        condition = 'user_uuid=\'%s\'' % user_uuid
+        if page:
+            limit = '%d,%d' % (limit * page, limit)
+
+        results = self.select(table, field, condition, order_by='id',
+                              limit=limit, desc=True)
+
+        for rst in results:
+            msg = {}
+            msg['id'] = rst[0]
+            msg['title'] = rst[4]
+            msg['content'] = rst[5]
+            msg['has_read'] = True if rst[6] == '1' else False
+            msg['create_time'] = rst[1]
+            messages.append(msg)
+
+        return messages

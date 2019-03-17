@@ -168,9 +168,17 @@ def update_user_skill():
 
 
 @app.route('/v1/user/messages', methods=['GET'])
+@token_auth.login_required
 def get_user_messages():
     """获取用户消息(站内信)"""
-    pass
+    limit = request.json.get('limit')
+    page = request.json.get('page')
+    user = user_manager.get_user_by_username(g.user.username)
+    messages = user.get_messages(limit, page)
+
+    # TODO: 处理异常
+    resp = helper.make_response_dict(10001, 'success', {'messages': messages})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/messages', methods=['PUT'])
