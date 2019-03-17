@@ -110,9 +110,25 @@ def get_user_profile():
 
 
 @app.route('/v1/user/profile', methods=['PUT'])
+@token_auth.login_required
 def update_user_profile():
     """更新用户信息"""
-    pass
+    user = user_manager.get_user_by_username(g.user.username)
+    update_profile = request.json
+    # TODO: 检查 update_profile 中参数的合法性
+    user.update_profile(update_profile)
+
+    user_profile = user.get_profile()
+    if not user_profile or \
+            not all(map(lambda x, y: update_profile[x] == user_profile[x],
+                        update_profile, user_profile)):
+        resp = helper.make_response_dict(10008, 'user profile update failed',
+                                         {'username': g.user.username})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'success',
+                                     {'user_profile': user_profile})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/skill', methods=['GET'])

@@ -161,12 +161,19 @@ class MysqlClient(MysqlBase):
                 'username': p[0],
                 'email': p[1],
                 'birthday': p[2],
-                'working_start': p[3],
+                'work_start': p[3],
                 'education': p[4],
-                'city': p[5]
+                'work_city': p[5]
             }
 
         return user_profile
+
+    def update_profile(self, user_uuid, update_profiles):
+        table = 'user_work_info'
+        assigments = ','.join(['%s=\'%s\'' % (k, v) for k, v
+                               in update_profiles.items()])
+        condition = 'user_uuid=\'%s\'' % user_uuid
+        self.update(table, assigments, condition)
 
     def add_token(self, user_uuid, token, expire):
         self.insert('user_tokens', (user_uuid, token, expire),

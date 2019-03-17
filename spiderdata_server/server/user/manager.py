@@ -42,8 +42,8 @@ class User(object):
         user_profile = DB.get_profile(self.uuid)
         return user_profile
 
-    def update_profile(self, **kwargs):
-        pass
+    def update_profile(self, update_profiles):
+        DB.update_profile(self.uuid, update_profiles)
 
     def get_skill(self):
         pass

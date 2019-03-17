@@ -221,9 +221,9 @@ Authorization: Token <token>
 |username|str|用户名|
 |email|str|邮箱|
 |birthday|str|生日(YYYY-MM-DD)|
-|working_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
+|work_start|str|参加工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
-|city|str|所在城市|
+|work_city|str|所在城市|
 
 > 示例
 
@@ -233,7 +233,7 @@ Authorization: Token <token>
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
 		"birthday": "1993年08月23日",
-		"working_start": "2015年7月",
+		"work_start": "2015年7月",
 		"education": "本科"
 	},
     "msg": "success",
@@ -293,9 +293,9 @@ Authorization: Token <token>
 |username|str|用户名|
 |email|str|邮箱|
 |birthday|str|生日(YYYY-MM-DD)|
-|working_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
+|work_start|str|开始工作时间(YYYY-MM-DD HH:MM:SS)|
 |education|str|学历|
-|city|str|所在城市|
+|work_city|str|所在城市|
 
 > 示例
 
@@ -305,7 +305,7 @@ Authorization: Token <token>
 		"username": "Jerry",
 		"email": "jerry@gmail.com",
 		"birthday": "YYYY-MM-DD",
-		"working_start": "YYYY-MM-DD HH:MM:SS",
+		"work_start": "YYYY-MM-DD HH:MM:SS",
 		"education": "本科"
 	},
     "msg": "success",
