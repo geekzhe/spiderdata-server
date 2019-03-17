@@ -253,3 +253,26 @@ class MysqlClient(MysqlBase):
             messages.append(msg)
 
         return messages
+
+    def get_message(self, msg_id):
+        msg = {}
+        table = 'user_messages'
+        field = '*'
+        condition = 'id=\'%s\'' % msg_id
+
+        results = self.select(table, field, condition)
+        if results:
+            rst = results[0]
+            msg['id'] = rst[0]
+            msg['title'] = rst[4]
+            msg['content'] = rst[5]
+            msg['has_read'] = True if rst[6] == '1' else False
+            msg['create_time'] = rst[1]
+
+        return msg
+
+    def update_message(self, msg_id):
+        table = 'user_messages'
+        assigments = 'has_read=\'1\''
+        condition = 'id=\'%s\'' % msg_id
+        self.update(table, assigments, condition)

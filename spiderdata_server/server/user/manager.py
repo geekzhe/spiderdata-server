@@ -60,7 +60,12 @@ class User(object):
         return messages
 
     def update_message_status(self, msg_id):
-        pass
+        DB.update_message(msg_id)
+
+    def get_message_status(self, msg_id):
+        msg = DB.get_message(msg_id)
+        has_read = msg.get('has_read', '0')
+        return has_read
 
     def generate_activation_code(self):
         pass

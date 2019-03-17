@@ -182,9 +182,25 @@ def get_user_messages():
 
 
 @app.route('/v1/user/messages', methods=['PUT'])
+@token_auth.login_required
 def update_user_message():
     """更新用户消息(站内信)状态"""
-    pass
+    user = user_manager.get_user_by_username(g.user.username)
+    msg_id = request.json.get('id')
+
+    # TODO: 检查要修改的消息是否属于当前用户
+
+    user.update_message_status(msg_id)
+
+    msg_has_read = user.get_message_status(msg_id)
+    if msg_has_read == '0':
+        resp = helper.make_response_dict(10011, 'message update failed',
+                                         {'msg_id': msg_id})
+        return make_response(jsonify(resp), 500)
+
+    resp = helper.make_response_dict(10001, 'message update success',
+                                     {'msg_id': msg_id})
+    return make_response(jsonify(resp), 201)
 
 
 @app.route('/v1/user/account_activation/<activation_code>', methods=['GET'])
