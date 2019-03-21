@@ -229,8 +229,14 @@ class MysqlClient(MysqlBase):
     def add_message(self, user_uuid, title, content=None):
         create_time = helper.get_time()
         # TODO: 处理异常
-        self.insert('user_messages', (create_time, user_uuid, title, content),
-                    '(create_time,user_uuid,title,content)')
+        if content:
+            self.insert('user_messages',
+                        (create_time, user_uuid, title,content),
+                        '(create_time,user_uuid,title,content)')
+        else:
+            self.insert('user_messages',
+                        (create_time, user_uuid, title),
+                        '(create_time,user_uuid,title)')
 
     def get_messages(self, user_uuid, limit=10, page=0):
         messages = []
