@@ -8,8 +8,11 @@ from flask_httpauth import HTTPTokenAuth
 
 from spiderdata_server.server import helper
 from spiderdata_server.server.user import manager as user_manager
+from flask_cors import CORS
 
 app = Flask(__name__)
+# 解决跨域问题
+CORS(app, supports_credentials=True)
 token_auth = HTTPTokenAuth('Token')
 
 

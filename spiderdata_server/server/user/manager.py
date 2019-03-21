@@ -119,6 +119,14 @@ def get_user_by_token(token):
     return user
 
 
+def user_exists(username):
+    user = get_user_by_username(username)
+    if not user:
+        return False
+    else:
+        return True
+
+
 def check_token(token):
     rest = DB.get_token_by_token(token)
     if not rest:

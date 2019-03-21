@@ -6,6 +6,8 @@ setup(
     install_requires=[
         'Flask',
         'Flask-HTTPAuth',
+        'gevent',
+        'gevent-websocket',
         'pymysql'
     ],
 )
