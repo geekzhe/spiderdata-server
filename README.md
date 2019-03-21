@@ -70,7 +70,7 @@ USER_API_HOST = '0.0.0.0'
 USER_API_PORT = 7070
 ```
 
-* 启动服务器
+* 启动 User API 服务器
 
 ```
 $ python3 spiderdata_server/cmd/run_user_api.py
@@ -80,6 +80,12 @@ $ python3 spiderdata_server/cmd/run_user_api.py
    Use a production WSGI server instead.
  * Debug mode: off
  * Running on http://0.0.0.0:7070/ (Press CTRL+C to quit)
+```
+
+* 启动 Chat API 服务器
+
+```
+$ python3 spiderdata_server/cmd/run_chat_api.py
 ```
 
 ## 目录结构
