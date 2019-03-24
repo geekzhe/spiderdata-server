@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="spiderdata-chat.css" type="text/css">
+    <script>
+        localStorage.setItem('p_user', 'tom');
+        localStorage.setItem('token', '296d9235-bc89-4566-b8e4-c338e13e0fd7');
+    </script>
+</head>
+<body>
+    <div id="status">
+        <div id="peer_user">
+            <h1 id="peer_user_name">未连接</h1>
+        </div>
+        <div id="peer_online">
+            <h1 id="peer_user_online">未连接</h1>
+        </div>
+    </div>
+    <div id="messages"></div>
+    <div id="input">
+        <input type="text" id="input_area">
+        <input type="button" value="提交" id="submit">
+    </div>
+    <script src="spiderdata-chat.js" type="text/javascript"></script>
+</body>
+</html>

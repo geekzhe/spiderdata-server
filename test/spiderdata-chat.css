@@ -1,0 +1,93 @@
+#status{
+    margin: 0 auto;
+    width: 600px;
+    height: 100px;
+    /*background-color: red;*/
+}
+#peer_user{
+    width: 350px;
+    height: 90px;
+    /*background-color: blue;*/
+    float: left;
+}
+#peer_user_name{
+    text-align: center;
+}
+#peer_online{
+    width: 200px;
+    height: 90px;
+    /*background-color: orange;*/
+    float: right;
+}
+#peer_user_online{
+    text-align: center;
+}
+#messages{
+    margin: 10px auto;
+    width: 700px;
+    height: 400px;
+    background-color: orange;
+    overflow: auto;
+    border-radius: 10px;
+    padding: 20px 50px;
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 2px 2px 2px 2px gray;
+}
+#messages .lefttalk{
+    background-color: white;
+    margin: 5px auto;
+    border-radius: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+    word-break: break-all;
+    display: inline-block;
+    float: left;
+    /*clear: right;*/
+    clear: both;
+}
+#messages .righttalk {
+    background-color: #56803c;
+    margin: 5px auto;
+    border-radius: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+    word-break: break-all;
+    display: inline-block;
+    float: right;
+    /*clear: left;*/
+    clear: both;
+}
+#messages .error_dialog{
+    width: 400px;
+    /*margin: 0 auto;*/
+    background-color: red;
+    padding: 10px 30px;
+    text-align: center;
+    border-radius: 10px;
+    position: sticky;
+    top: 120px;
+    left: 60px;
+}
+#messages .showTime{
+    margin: 0 auto;
+    width: 150px;
+    background-color: rgba(255,255,255,0.3);
+    text-align: center;
+    font-size: small;
+    padding: 1px 2px;
+    line-height: 18px;
+    border-radius: 10px;
+    clear: both;
+}
+#input{
+    margin: 10px auto;
+    width: 700px;
+    background-color: gray;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 2px gray;
+}
+#input_area{
+    margin: 10px;
+    width: 600px;
+}

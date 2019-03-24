@@ -2,10 +2,12 @@ import json
 
 from flask import Flask, g, make_response, request
 
+from spiderdata_server.db.mysql_client import MysqlClient
 from spiderdata_server.server import helper
 from spiderdata_server.server.user import manager as user_manager
 
 app = Flask(__name__)
+DB = MysqlClient()
 
 # 该列表用于存储在线用户信息(以下注释中统一叫做<在线用户列表>)
 # 格式：[{'src_user':'当前连接用户','dest_user':'目标聊天用户','sock':'连接套接字'}]
@@ -66,8 +68,9 @@ def chat(dest_user):
         send_msg_to_user(dest_user, src_user, content, 30098,
                          'Target user %s login' % dest_user)
 
-    # TODO: 从数据库中查找是否存在未发送的离线消息(has_send为False)
+    # 从数据库中查找是否存在未发送的离线消息(has_send为0)
     # 如果有，则将消息发送给客户端
+    send_offline_msgs(src_user, dest_user)
 
     # 循环接收客户端发送过来的消息并处理
     while True:
@@ -94,26 +97,14 @@ def chat(dest_user):
         # 将接收到的数据由字符串转换为字典
         recv_msg = json.loads(recv_data)
 
-        # TODO: 将消息存储到数据库中
-        # 需要明确数据库有哪些字段
-        # id,dest_user,src_user,msg,recv_time,has_send
-        # id: 消息ID
-        # dest_user: 收信人
-        # src_user: 发信人
-        # msg: 消息内容
-        # recv_time: 服务器接收到消息的时间(也可以理解为客户端发送消息的时间)
-        # has_send: 是否已转发给目标用户(默认False，未转发)
+        # 将消息存储到数据库中
         recv_time = helper.get_time()
+        msg_uuid = save_chat_message(src_user, dest_user, recv_msg['msg'],
+                                     recv_time)
 
         # 如果对端用户在线，将消息发送给对端用户
         if peer_user_online(src_user, dest_user):
-            # 组织发送给客户端的消息
-            send_msg = {
-                'msg': recv_msg['msg'],
-                'from_user': src_user,
-                'send_time': recv_time
-            }
-            send_msg_to_user(src_user, dest_user, send_msg)
+            send_msg(msg_uuid)
 
             # 以站内信的方式通知用户收到来自于用户的新消息
             g.user.add_message('来自于 %s 的新消息' % src_user)
@@ -135,7 +126,7 @@ def peer_user_online(src_user, dest_user):
                   (user_info['src_user'], user_info['dest_user']))
             return True
     print('Source user: %s Destination User: %s is not online' %
-          (dest_user, src_user))
+          (src_user, dest_user))
     return False
 
 
@@ -158,4 +149,45 @@ def send_msg_to_user(src_user, dest_user, content, status=30001, msg='OK'):
             }
             print('Send msg to %s: %s' % (dest_user, send_data))
             dest_user_socket.send(json.dumps(send_data))
-            # TODO: 将数据库中该条消息的发送状态(has_send)修改为已发送(True)
+            return True
+    return False
+
+
+def send_msg(msg_uuid):
+    msg = DB.get_chat_message_by_uuid(msg_uuid)
+    # 组织发送给客户端的消息
+    content = {
+        'msg': msg['content'],
+        'from_user': msg['src_user'],
+        'send_time': msg['recv_time']
+    }
+    if send_msg_to_user(msg['src_user'], msg['dest_user'], content):
+        # 将数据库中该条消息的发送状态(has_send)修改为已发送(1)
+        DB.update_chat_message(msg['uuid'])
+
+
+def save_chat_message(src_user, dest_user, content, recv_time):
+        # uuid: 消息ID
+        # src_user: 发信人
+        # dest_user: 收信人
+        # content: 消息内容
+        # recv_time: 服务器接收到消息的时间(也可以理解为客户端发送消息的时间)
+        # has_send: 是否已转发给目标用户(默认0，未转发)
+        UUID = helper.generate_uuid()
+        DB.add_chat_message(UUID, src_user, dest_user, content, recv_time)
+        return UUID
+
+
+def get_unsent_msgs(src_user, dest_user):
+    msgs = DB.get_chat_messages_by_user(src_user, dest_user)
+    unsent_msgs = [m['uuid'] for m in filter(lambda m: not m['has_send'],
+                                             msgs)]
+    return unsent_msgs
+
+
+def send_offline_msgs(src_user, dest_user):
+    unsent_msgs = get_unsent_msgs(dest_user, src_user)
+    print('unsent msgs: %s' % unsent_msgs)
+    for msg_uuid in unsent_msgs:
+        print('send msg: %s' % msg_uuid)
+        send_msg(msg_uuid)

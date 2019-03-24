@@ -16,6 +16,26 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `chat_messages`
+--
+
+DROP TABLE IF EXISTS `chat_messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `chat_messages` (
+  `uuid` varchar(64) NOT NULL,
+  `create_time` varchar(64) NOT NULL,
+  `update_time` varchar(64) DEFAULT NULL,
+  `src_user` varchar(64) NOT NULL,
+  `dest_user` varchar(64) NOT NULL,
+  `content` text NOT NULL,
+  `recv_time` varchar(64) NOT NULL,
+  `has_send` enum('0','1') NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user`
 --
 
@@ -54,7 +74,7 @@ CREATE TABLE `user_messages` (
   `has_read` enum('0','1') NOT NULL DEFAULT '0',
   `deleted` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=492 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,4 +140,4 @@ CREATE TABLE `user_work_info` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-17 20:14:34
+-- Dump completed on 2019-03-24 17:50:50
