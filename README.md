@@ -68,6 +68,7 @@ MYSQL_DATABASE_NAME = 'spiderdata'
                                                                                 
 USER_API_HOST = '0.0.0.0'                                                       
 USER_API_PORT = 7070
+CHAT_API_PORT = 7071
 ```
 
 * 启动 User API 服务器
