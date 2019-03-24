@@ -1,6 +1,8 @@
 """
 用户管理模块业务代码
 """
+import hashlib
+
 from spiderdata_server.db.mysql_client import MysqlClient
 from spiderdata_server.server import helper
 
@@ -15,7 +17,8 @@ class User(object):
         self.uuid = uuid
 
     def check_password(self, password):
-        if self.password != password:
+        password_md5 = hashlib.md5(password.encode()).hexdigest()
+        if self.password != password_md5:
             return False
         else:
             return True
@@ -85,7 +88,8 @@ class User(object):
 def create_user(username, password, email):
     # TODO: 密码需要hash后存储
     # TODO: 捕获数据库操作异常
-    DB.add_user(username, password, email)
+    password_md5 = hashlib.md5(password.encode()).hexdigest()
+    DB.add_user(username, password_md5, email)
     user = get_user_by_username(username)
     DB.add_profile(user.uuid)
     DB.add_skill(user.uuid)
