@@ -229,14 +229,8 @@ class MysqlClient(MysqlBase):
     def add_message(self, user_uuid, title, content=None):
         create_time = helper.get_time()
         # TODO: 处理异常
-        if content:
-            self.insert('user_messages',
-                        (create_time, user_uuid, title,content),
-                        '(create_time,user_uuid,title,content)')
-        else:
-            self.insert('user_messages',
-                        (create_time, user_uuid, title),
-                        '(create_time,user_uuid,title)')
+        self.insert('user_messages', (create_time, user_uuid, title, content),
+                    '(create_time,user_uuid,title,content)')
 
     def get_messages(self, user_uuid, limit=10, page=0):
         messages = []
@@ -288,58 +282,4 @@ class MysqlClient(MysqlBase):
         table = 'user_messages'
         assigments = 'deleted=\'1\''
         condition = 'id=\'%s\'' % msg_id
-        self.update(table, assigments, condition)
-
-    def add_chat_message(self, msg_uuid, src_user, dest_user, content,
-                         recv_time):
-        create_time = helper.get_time()
-        # TODO: 处理异常
-        self.insert('chat_messages',
-                    (msg_uuid, create_time, src_user, dest_user, content,
-                     recv_time),
-                    '(uuid,create_time,src_user,dest_user,content,recv_time)')
-
-    def get_chat_message_by_uuid(self, msg_uuid):
-        msg = {}
-        table = 'chat_messages'
-        field = '*'
-        condition = 'uuid=\'%s\'' % msg_uuid
-
-        results = self.select(table, field, condition)
-        if results:
-            rst = results[0]
-            msg['uuid'] = rst[0]
-            msg['src_user'] = rst[3]
-            msg['dest_user'] = rst[4]
-            msg['content'] = rst[5]
-            msg['recv_time'] = rst[6]
-            msg['has_send'] = True if rst[7] == '1' else False
-
-        return msg
-
-    def get_chat_messages_by_user(self, src_user, dest_user):
-        msgs = []
-        table = 'chat_messages'
-        field = '*'
-        condition = 'src_user=\'%s\' and dest_user=\'%s\'' % (src_user,
-                                                              dest_user)
-
-        results = self.select(table, field, condition, order_by='recv_time')
-        for rst in results:
-            msg = {
-                'uuid': rst[0],
-                'src_user': rst[3],
-                'dest_user': rst[4],
-                'content': rst[5],
-                'recv_time': rst[6],
-                'has_send': True if rst[7] == '1' else False
-            }
-            msgs.append(msg)
-
-        return msgs
-
-    def update_chat_message(self, msg_uuid):
-        table = 'chat_messages'
-        assigments = 'has_send=\'1\''
-        condition = 'uuid=\'%s\'' % msg_uuid
         self.update(table, assigments, condition)
