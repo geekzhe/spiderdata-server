@@ -1,8 +1,8 @@
-
-  
 """
 职位分析模块业务代码
 """
+import re
+
 from spiderdata_server.db.mongodb_client import MongodbClient
 from spiderdata_server.server import helper
 
@@ -18,32 +18,65 @@ class zhilian_postion(object):
         lauage_count = DB.select_Top10()
         # lauage_post=[]
         return lauage_count
-    
-     # TODO 工作年限和岗位数量
+
+    # TODO 工作年限和岗位数量
     def working_year_Jobs_count(self):
-        zhilian_working_year_Jobs_count= DB.working_year_Jobs_count()
+        zhilian_working_year_Jobs_count = DB.working_year_Jobs_count()
         return zhilian_working_year_Jobs_count
 
     # TODO 工作年限和和平均工资
     def working_year_avageSalary(self):
         zhilian_work_year_job_salary = DB.mongo_select_working_years_Jobs_avgsalary()
-        return zhilian_work_year_job_salary
+        salaries_by_language = {}
+        for language, item in zhilian_work_year_job_salary.items():
+            salaries = {}
+            for i in item:
+                # i 格式
+                # {
+                #   'count': 1,
+                #   '_id': {'work_years': '不限', 'salary': '10K-20K'}
+                # }
+                work_years = i['_id']['work_years']
+                salary = i['_id']['salary']
+                count = int(i['count'])
+                # 去除无法统计的数据
+                if work_years in ['不限', '无经验'] or salary in ['薪资面议']:
+                    continue
+                salary = re.search(r'(.+)K-(.+)K', salary).groups()
+                salary_min = float(salary[0]) * 1000
+                salary_max = float(salary[1]) * 1000
 
+                if work_years in salaries:
+                    salaries[work_years]['min'] += salary_min * count
+                    salaries[work_years]['max'] += salary_max * count
+                    salaries[work_years]['count'] += count
+                else:
+                    salaries[work_years] = {
+                        'min': salary_min * count,
+                        'max': salary_max * count,
+                        'count': count
+                    }
 
+            for year, salary_info in salaries.items():
+                salaries[year]['min_avg'] = (salary_info['min'] //
+                                             salary_info['count'])
+                salaries[year]['max_avg'] = (salary_info['max'] //
+                                             salary_info['count'])
+            salaries_by_language[language] = salaries
+
+        return salaries_by_language
 
     # TODO: 这里写与业务有关的数据库操作方法
 
     # TODO 学历和岗位数量
-    def  eduLevel_JobCount(self):
+    def eduLevel_JobCount(self):
         zhilian_eduLevel_job_count = DB.eduLevel_level_Job_ount()
         return zhilian_eduLevel_job_count
-    
+
     #  TODO Base education's post wage 基于学历的岗位工资
     def education_avgsalary(self):
         zhilian_edulevle_job_avgsalary = DB.education_avgsalary()
         return zhilian_edulevle_job_avgsalary
-    
-    
     #  TODO  基于用户选择的的岗位推荐
     def job_recommend(self,conndition):
         perfect_job = DB.job_recommd(conndition)
@@ -51,7 +84,5 @@ class zhilian_postion(object):
             'job_name':perfect_job['python'][0][' jobName'],
             'job_url':perfect_job['python'][0]['jobURL']
         }
-        print('-------------------',job_info)
-        
-        return job_info
 
+        return job_info

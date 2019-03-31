@@ -1,14 +1,17 @@
 from flask import g, Flask, jsonify, make_response, request
+from flask_cors import CORS
+
 from spiderdata_server.server import helper
-from spiderdata_server.server.data.manager import zhilian_postion 
+from spiderdata_server.server.data.manager import zhilian_postion
 
 
 post_manager = zhilian_postion()
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
 # －－－－－－－－－－首页展示
-#   server --> client 
+#   server --> client
 #  python  javaScript c ..智联招聘的每个数量返回数字
 @app.route('/v1/jobs_count', methods=['GET'])
 def jobsAndLauage_Top10_count():
@@ -16,7 +19,7 @@ def jobsAndLauage_Top10_count():
     resp={'body':{'jobs':lauage_post}}
 
     return make_response(jsonify(resp),200)
-                        
+
 
 # TODO 前十语言招聘数量排行
 @app.route('/v1/work_year_job_count', methods=['GET'])
