@@ -70,6 +70,3 @@ def  job_recommend():
 
     return make_response(jsonify(job_recommend_user),200)
 
-
-
-app.run()
