@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer
 from spiderdata_server.server.user.chat import app

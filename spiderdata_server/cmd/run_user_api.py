@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from spiderdata_server.server.user.api import app
 from spiderdata_server.etc import settings as CONF
 
