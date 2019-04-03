@@ -25,7 +25,7 @@ db.zhilian_python_BJ.aggregate(
 db.zhilian_python_BJ.aggregate(
     {$group:{_id:{工作年限:'$eduLevel',薪资范围:'$salary'},数量:{$sum:1}}})
 
-6. 
+6.
 """
 
 
@@ -158,6 +158,34 @@ class MongoBase(object):
 
         return user_chose_recommed_jobs
 
+    def _convert_regex(self, regex):
+        cr = Regex.from_native(re.compile(regex))
+        cr.flags = re.UNICODE
+        return cr
+
+    def search_post(self, regex, field, limit=10):
+        # db.csdn.find({title:{$regex:'python', $options: '$i'}})
+        cursor = self.connect()['csdn']
+        posts = []
+        for r in cursor.find(
+                {"title": {"$regex": self._convert_regex(regex),
+                           "$options": '$i'}}, field).limit(limit):
+            posts.append(r)
+
+        return posts
+
+    def insert_search_history(self, data):
+        cursor = self.connect()['search_history']
+        cursor.insert_one(data)
+
+    def find_search_history(self, filters, field, limit=10):
+        cursor = self.connect()['search_history']
+        search_history = []
+        for r in cursor.find(filters, field).limit(limit):
+            search_history.append(r)
+
+        return search_history
+
 
 class MongodbClient(MongoBase):
     """与业务有关的数据库操作方法类"""
@@ -202,3 +230,32 @@ class MongodbClient(MongoBase):
     def job_recommd(self, condition):
         condition_user = self.choose_user_job_recommend(condition)
         return condition_user
+
+    def get_posts(self, search_key, limit=10):
+        regex = search_key
+        field = {'_id': 0, 'title': 1, 'url': 1}
+        posts = self.search_post(regex, field, limit)
+
+        return posts
+
+    def add_search_history(self, search_key, user):
+        search_time = helper.get_time()
+        data = {
+            'search_key': search_key,
+            'user': user,
+            'time': search_time
+        }
+
+        self.insert_search_history(data)
+
+    def get_search_history(self, search_key, after_time, except_user,
+                           limit=10):
+        # db.search_history.find({user:'tom',time:{$gt:"2019-04-03 08:40:30"}})
+        filters = {"search_key": search_key,
+                   "time": {"$gt": after_time},
+                   "user": {"$ne": except_user}}
+        field = {"_id": 0, "user": 1}
+        search_history = self.find_search_history(filters, field, limit)
+
+        return search_history
+

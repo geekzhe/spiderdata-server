@@ -87,3 +87,31 @@ class zhilian_postion(object):
         }
 
         return job_info
+
+
+class CSDN(object):
+    def __init__(self):
+        pass
+
+    def search_post(self, search_key, limit=10):
+        """基于指定的关键字查找相关内容"""
+        # 调数据库接口，基于关键字查询相关内容
+        posts = DB.get_posts(search_key, limit)
+
+        return posts
+
+    def add_search_history(self, search_key, user):
+        DB.add_search_history(search_key, user)
+
+    def get_search_history(self, search_key, except_user, limit=10):
+        """获取指定关键字最近的查询记录"""
+        # 只查询最近 10 天内的搜索记录
+        after_time = helper.get_time(helper.get_time_sec() - (10 * 24 * 60 *
+                                                             60))
+        # 获取最近搜索指定关键字的用户列表
+        posts = [k['user'] for k in DB.get_search_history(search_key,
+                                                          after_time,
+                                                          except_user, limit)]
+
+        return posts
+
