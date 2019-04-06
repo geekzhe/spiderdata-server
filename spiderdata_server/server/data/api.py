@@ -72,7 +72,7 @@ def job_recommend():
     return make_response(jsonify(job_recommend_user), 200)
 
 
-@app.route('/v1/search_post', methods=['GET'])
+@app.route('/v1/search_post', methods=['POST'])
 def search_post():
     token = request.json.get('token')
     search_key = request.json.get('search_key')
@@ -93,6 +93,6 @@ def search_post():
 
     resp = helper.make_response_dict(40001,
                                      'success',
-                                     {'result': search_result,
+                                     {'posts': search_result,
                                       'user_list': user_list})
     return make_response(jsonify(resp), 201)
