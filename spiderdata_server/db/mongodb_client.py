@@ -174,11 +174,14 @@ class MongoBase(object):
 
         return posts
 
-    def insert_search_history(self, data):
+    def update_search_history(self, filters, update):
+        # 为了加快查找速度，需要在数据库中创建以下复合索引
+        # db.search_history.createIndex({search_key:1,user:1})
         cursor = self.connect()['search_history']
-        cursor.insert_one(data)
+        cursor.update_one(filters, update, upsert=True)
 
     def find_search_history(self, filters, field, limit=10):
+        # db.search_history.find({user:'tom',time:{$gt:"2019-04-03 08:40:30"}})
         cursor = self.connect()['search_history']
         search_history = []
         for r in cursor.find(filters, field).limit(limit):
@@ -240,22 +243,29 @@ class MongodbClient(MongoBase):
 
     def add_search_history(self, search_key, user):
         search_time = helper.get_time()
-        data = {
-            'search_key': search_key,
-            'user': user,
-            'time': search_time
-        }
 
-        self.insert_search_history(data)
+        # search_history 表中要保证 同一用户 搜索 同一关键词 的记录只有一条
+        # 因此需要使用 update(upsert=True) 方法而不是 insert 方法添加搜索记录
+        # 指定用户搜索指定关键词的记录已存在时，更新搜索时间；不存在时，添加新记录
+        filters = {
+            # 关键词忽略大小写，将关键词全部转为小写进行记录
+            'search_key': search_key.lower(),
+            'user': user
+        }
+        update = {
+            '$set': {'time': search_time}
+        }
+        self.update_search_history(filters, update)
 
     def get_search_history(self, search_key, after_time, except_user,
                            limit=10):
-        # db.search_history.find({user:'tom',time:{$gt:"2019-04-03 08:40:30"}})
-        filters = {"search_key": search_key,
-                   "time": {"$gt": after_time},
-                   "user": {"$ne": except_user}}
+        filters = {
+            # 记录时已将关键词全部转为小写字母，查找时全部转为小写进行查找
+            "search_key": search_key.lower(),
+            "time": {"$gt": after_time},
+            "user": {"$ne": except_user}
+        }
         field = {"_id": 0, "user": 1}
         search_history = self.find_search_history(filters, field, limit)
 
         return search_history
-
