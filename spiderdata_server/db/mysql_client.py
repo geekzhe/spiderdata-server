@@ -111,8 +111,12 @@ class MysqlClient(MysqlBase):
                              email),
                     '(uuid, create_time, username, password, email)')
 
-    def update_user(self):
-        pass
+    def update_user(self, user_uuid, user_info):
+        table = 'user'
+        assigments = ','.join(['%s=\'%s\'' % (k, v) for k, v
+                               in user_info.items()])
+        condition = 'uuid=\'%s\'' % user_uuid
+        self.update(table, assigments, condition)
 
     def get_user(self, username=None, user_uuid=None):
         user_info = None
@@ -168,7 +172,7 @@ class MysqlClient(MysqlBase):
 
         return user_profile
 
-    def update_profile(self, user_uuid, update_profiles):
+    def update_user_work_info(self, user_uuid, update_profiles):
         table = 'user_work_info'
         assigments = ','.join(['%s=\'%s\'' % (k, v) for k, v
                                in update_profiles.items()])
@@ -207,15 +211,16 @@ class MysqlClient(MysqlBase):
 
         if results:
             skills = results[0][4]
-            for s in skills.split(','):
-                user_skill.append(s)
+            if skills:
+                for s in skills.split(','):
+                    user_skill.append(s)
 
         return user_skill
 
     def update_skill(self, user_uuid, update_skill):
         table = 'user_skill'
         assigments = 'skills=\'%s\'' % ','.join(update_skill)
-        condition = 'user_uuid=\'%s\' and deleted=\'0\'' % user_uuid
+        condition = 'user_uuid=\'%s\'' % user_uuid
         self.update(table, assigments, condition)
 
     def add_skill(self, user_uuid):

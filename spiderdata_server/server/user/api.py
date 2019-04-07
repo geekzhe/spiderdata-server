@@ -141,11 +141,6 @@ def get_user_skill():
     user = user_manager.get_user_by_username(g.user.username)
     user_skill = user.get_skill()
 
-    if not user_skill:
-        resp = helper.make_response_dict(10009, 'user skill not found',
-                                         {'username': g.user.username})
-        return make_response(jsonify(resp), 500)
-
     resp = helper.make_response_dict(10001, 'success',
                                      {'skill': user_skill})
     return make_response(jsonify(resp), 201)
@@ -160,7 +155,7 @@ def update_user_skill():
     user.update_skill(update_skill)
 
     user_skill = user.get_skill()
-    if not user_skill or update_skill != user_skill:
+    if update_skill != user_skill:
         resp = helper.make_response_dict(10010, 'user skill update failed',
                                          {'username': g.user.username})
         return make_response(jsonify(resp), 500)
@@ -170,7 +165,7 @@ def update_user_skill():
     return make_response(jsonify(resp), 201)
 
 
-@app.route('/v1/user/messages', methods=['GET'])
+@app.route('/v1/user/messages', methods=['POST'])
 @token_auth.login_required
 def get_user_messages():
     """获取用户消息(站内信)"""
