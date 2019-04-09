@@ -150,8 +150,8 @@ class MongoBase(object):
         for k, v in lauage_name.items():
             cursor = self.connect()[v].find(
                 {"responsibility": {"$regex": regex, "$options": "i"}})
+            count_list = []
             for x in cursor:
-                count_list = []
                 count_list.append(x)
             user_chose_recommed_jobs[k] = count_list
         print(user_chose_recommed_jobs)

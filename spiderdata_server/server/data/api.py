@@ -19,59 +19,75 @@ CORS(app, supports_credentials=True)
 @app.route('/v1/jobs_count', methods=['GET'])
 def jobsAndLauage_Top10_count():
     lauage_post = post_manager.lauage_position_top10()
-    resp = {'body': {'jobs': lauage_post}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'jobs': lauage_post})
 
     return make_response(jsonify(resp), 200)
 
 
 # TODO 前十语言招聘数量排行
+
+# 不同工作年限岗位数量统计
 @app.route('/v1/work_year_job_count', methods=['GET'])
 def work_year_job_count():
     work_yesrs_job_counts = post_manager.working_year_Jobs_count()
-    resp = {'body': {'jobs': work_yesrs_job_counts}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'jobs': work_yesrs_job_counts})
 
     return make_response(jsonify(resp), 200)
 
 
-# TODO 岗位学历和岗位数量图
+# 岗位学历和岗位数量图
 @app.route('/v1/education_level_job_count', methods=['GET'])
 def education_level_job_count():
     eduLevel_job_counts = post_manager.eduLevel_JobCount()
-    resp = {'body': {'jobs': eduLevel_job_counts}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'jobs': eduLevel_job_counts})
 
     return make_response(jsonify(resp), 200)
 
 
-# TODO 工作年限和岗位平均工资
+# 工作年限和岗位平均工资
 @app.route('/v1/work_year_job_avgsalary', methods=['GET'])
 def work_year_job_avgsalary():
     work_years_job_avgsalarys = post_manager.working_year_avageSalary()
-    resp = {'body': {'jobs': work_years_job_avgsalarys}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'jobs': work_years_job_avgsalarys})
 
     return make_response(jsonify(resp), 200)
 
 
 # TODO 学历的平均工资
+# TODO(zhe): 没有整合数据，需要优化
 @app.route('/v1/edulevel_job_avgsalary', methods=['GET'])
 def edulevel_job_avgsalary():
     edulevel_job_avgsalarys = post_manager.education_avgsalary()
-    resp = {'body': {'jobs': edulevel_job_avgsalarys}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'jobs': edulevel_job_avgsalarys})
 
     return make_response(jsonify(resp), 200)
 
 
-# TODO 　获取前台的数据－岗位推荐
+# 获取前台的数据－岗位推荐
 @app.route('/v1/job_recommend', methods=['POST'])
 def job_recommend():
     skills = request.json.get('skill')
     # skills = ['python', 'css']
     condition = "+.+".join(skills)
     job_recommend_user = post_manager.job_recommend(condition)
-    resp = {'body': {'jobs': job_recommend_user}}
+    resp = helper.make_response_dict(40001,
+                                     'success',
+                                     {'job': job_recommend_user})
 
-    return make_response(jsonify(job_recommend_user), 200)
+    return make_response(jsonify(resp), 200)
 
 
+# 基于关键词的 CSDN 文章搜索
 @app.route('/v1/search_post', methods=['POST'])
 def search_post():
     token = request.json.get('token')
@@ -95,4 +111,4 @@ def search_post():
                                      'success',
                                      {'posts': search_result,
                                       'user_list': user_list})
-    return make_response(jsonify(resp), 201)
+    return make_response(jsonify(resp), 200)

@@ -46,7 +46,15 @@ class User(object):
         return user_profile
 
     def update_profile(self, update_profiles):
-        DB.update_profile(self.uuid, update_profiles)
+        # 用户的 profile 保存在不同的表中，这里要拆开后更新到不同的表
+        user_info = {
+            'birthday': update_profiles['birthday']
+        }
+        for k in user_info.keys():
+            del update_profiles[k]
+
+        DB.update_user(self.uuid, user_info)
+        DB.update_user_work_info(self.uuid, update_profiles)
 
     def get_skill(self):
         user_skill = DB.get_skill(self.uuid)
