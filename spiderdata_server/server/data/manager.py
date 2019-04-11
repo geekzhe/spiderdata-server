@@ -76,7 +76,45 @@ class zhilian_postion(object):
     #  TODO Base education's post wage 基于学历的岗位工资
     def education_avgsalary(self):
         zhilian_edulevle_job_avgsalary = DB.education_avgsalary()
-        return zhilian_edulevle_job_avgsalary
+
+        salaries_by_language = {}
+        for language, item in zhilian_edulevle_job_avgsalary.items():
+            salaries = {}
+            for i in item:
+                # i 格式
+                # {
+                #   'count': 3,
+                #   '_id': {'salary': '12K-22K', 'education': '本科'}
+                # }
+                education = i['_id']['education']
+                salary = i['_id']['salary']
+                count = int(i['count'])
+                # 去除无法统计的数据
+                if education in ['不限'] or salary in ['薪资面议']:
+                    continue
+                salary = re.search(r'(.+)K-(.+)K', salary).groups()
+                salary_min = float(salary[0]) * 1000
+                salary_max = float(salary[1]) * 1000
+
+                if education in salaries:
+                    salaries[education]['min'] += salary_min * count
+                    salaries[education]['max'] += salary_max * count
+                    salaries[education]['count'] += count
+                else:
+                    salaries[education] = {
+                        'min': salary_min * count,
+                        'max': salary_max * count,
+                        'count': count
+                    }
+
+            for edu, salary_info in salaries.items():
+                salaries[edu]['min_avg'] = (salary_info['min'] //
+                                            salary_info['count'])
+                salaries[edu]['max_avg'] = (salary_info['max'] //
+                                            salary_info['count'])
+            salaries_by_language[language] = salaries
+
+        return salaries_by_language
 
     #  TODO  基于用户选择的的岗位推荐
     def job_recommend(self, conndition):
@@ -107,11 +145,10 @@ class CSDN(object):
         """获取指定关键字最近的查询记录"""
         # 只查询最近 10 天内的搜索记录
         after_time = helper.get_time(helper.get_time_sec() - (10 * 24 * 60 *
-                                                             60))
+                                                              60))
         # 获取最近搜索指定关键字的用户列表
         posts = [k['user'] for k in DB.get_search_history(search_key,
                                                           after_time,
                                                           except_user, limit)]
 
         return posts
-
